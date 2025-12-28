@@ -40,10 +40,6 @@ export default function RSVPForm() {
 
       setRsvpId(docRef.id);
       setSubmitted(true);
-
-      // ❌ DO NOT RESET STATE HERE
-      // setGuestName('');
-      // setAttendance('');
     } catch (err) {
       setError('Failed to submit RSVP. Please try again.');
       console.error(err);
@@ -81,15 +77,18 @@ export default function RSVPForm() {
 
             <div className="flex justify-center my-6">
               <QRCodeCanvas
-                value={`RSVP:${rsvpId}`}
+                // THIS LINE FIXES THE FAST SCANNING: 
+                // It creates a link that the phone camera recognizes instantly.
+                value={`${window.location.origin}/admin?id=${rsvpId}`}
                 size={220}
+                level={"H"} // High error correction makes it scan faster/better
                 ref={qrRef}
               />
             </div>
 
             <button
               onClick={downloadQRCode}
-              className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-3 rounded-xl"
+              className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-3 rounded-xl transition-all"
             >
               <Download size={18} />
               Download QR Code
@@ -128,7 +127,7 @@ export default function RSVPForm() {
             <h2 className="text-3xl font-serif font-bold text-rose-600 mb-2">
               RSVP
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Please let us know if you'll be joining us
             </p>
           </div>
@@ -165,10 +164,10 @@ export default function RSVPForm() {
             <button
               type="button"
               onClick={() => setAttendance('yes')}
-              className={`w-full py-4 rounded-xl font-semibold ${
+              className={`w-full py-4 rounded-xl font-semibold transition-colors ${
                 attendance === 'yes'
                   ? 'bg-rose-500 text-white'
-                  : 'bg-gray-100'
+                  : 'bg-gray-100 dark:bg-gray-700 dark:text-gray-300'
               }`}
             >
               ✓ Yes, I'll be there!
@@ -177,10 +176,10 @@ export default function RSVPForm() {
             <button
               type="button"
               onClick={() => setAttendance('no')}
-              className={`w-full py-4 rounded-xl font-semibold ${
+              className={`w-full py-4 rounded-xl font-semibold transition-colors ${
                 attendance === 'no'
                   ? 'bg-gray-500 text-white'
-                  : 'bg-gray-100'
+                  : 'bg-gray-100 dark:bg-gray-700 dark:text-gray-300'
               }`}
             >
               ✗ Sorry, can't make it
@@ -190,7 +189,7 @@ export default function RSVPForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-rose-500 text-white font-bold py-4 rounded-xl"
+            className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50"
           >
             {loading ? 'Submitting...' : 'Submit RSVP'}
           </button>
